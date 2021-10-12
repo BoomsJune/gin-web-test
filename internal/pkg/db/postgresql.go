@@ -1,11 +1,14 @@
 package db
 
 import (
-	"database/sql"
 	"log"
 	"time"
 
 	"example.com/web-test/internal/pkg/config"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
+	"gorm.io/gorm/schema"
 )
 
 const (
@@ -15,16 +18,25 @@ const (
 	maxIdletime  = time.Hour // 空闲连接可复用最大时间
 )
 
-var DB *sql.DB
+var DB *gorm.DB
 
 func init() {
-	db, err := sql.Open("postgres", config.Cfg.DB.Url)
+	conn, err := gorm.Open(postgres.New(postgres.Config{
+		DSN: config.Cfg.DB.Url,
+	}), &gorm.Config{
+		NamingStrategy: schema.NamingStrategy{
+			SingularTable: true, // 表名去掉s
+		},
+		Logger: logger.Default.LogMode(logger.Silent),
+	})
 	if err != nil {
 		panic(err)
 	} else {
-		if err = db.Ping(); err != nil {
+		db, err := conn.DB()
+		if err != nil || db.Ping() != nil {
 			panic(err)
 		} else {
+			DB = conn
 			db.SetMaxIdleConns(maxIdleConns)
 			db.SetMaxOpenConns(maxOpenConns)
 			db.SetConnMaxLifetime(maxLifetime)

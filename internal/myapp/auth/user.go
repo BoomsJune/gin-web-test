@@ -17,6 +17,10 @@ type User struct {
 	NickName string  `json:"nick_name,omitempty"`
 }
 
+func (User) TableName() string {
+	return "auth_user"
+}
+
 func (u *User) MarshalJSON() ([]byte, error) {
 	return json.Marshal(&struct {
 		ID       uint   `json:"id"`
@@ -38,34 +42,30 @@ func (e *Encrypt) UnmarshalJSON(b []byte) (err error) {
 }
 
 func (u *User) Register() (string, error) {
-	var userId uint
-	sql := "INSERT INTO auth_user(phone, password, nick_name) VALUES ($1, $2, $3) RETURNING id"
-	err := db.DB.QueryRow(sql, u.Phone, u.Password, u.NickName).Scan(&userId)
+	if err := db.DB.Create(&u).Error; err != nil {
+		return "", err
+	}
+
+	token, err := util.JwtGet(u.ID)
 	if err != nil {
 		return "", err
 	}
-	token, err := util.JwtGet(userId)
-	if err != nil {
-		return "", err
-	}
+
 	return token, nil
 }
 
 func (u *User) Login() (string, error) {
-	var userId uint
-	var password string
+	var returnUser User
 
-	sql := "SELECT id, password FROM auth_user WHERE phone = $1"
-	err := db.DB.QueryRow(sql, u.Phone).Scan(&userId, &password)
-	if err != nil {
+	if err := db.DB.Where("phone = ?", u.Phone).First(&returnUser).Error; err != nil {
 		return "", err
 	}
 
-	if password != string(u.Password) {
+	if returnUser.Password != u.Password {
 		return "", errors.New("password error")
 	}
 
-	token, err := util.JwtGet(userId)
+	token, err := util.JwtGet(returnUser.ID)
 	if err != nil {
 		return "", err
 	}
@@ -74,12 +74,10 @@ func (u *User) Login() (string, error) {
 }
 
 func Info(userId int) (*User, error) {
-	var phone, nick_name string
-
-	sql := "SELECT phone, nick_name FROM auth_user WHERE id = $1"
-	err := db.DB.QueryRow(sql, userId).Scan(&phone, &nick_name)
-	if err != nil {
+	var user *User
+	// db.DB.Debug().Where("id = ?", userId).First(&user)
+	if err := db.DB.Where("id = ?", userId).First(&user).Error; err != nil {
 		return nil, err
 	}
-	return &User{ID: uint(userId), Phone: phone, NickName: nick_name}, nil
+	return user, nil
 }
