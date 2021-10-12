@@ -6,5 +6,7 @@
     * postgresql
 * github.com/golang-jwt/jwt
     * jwt
+* gorm.io/gorm
+    * orm框架
 
 ## 结构
