@@ -26,11 +26,17 @@ type cfg struct {
 var Cfg cfg
 
 func init() {
+	// get file name
+	env := os.Getenv("GIN_MODE")
+	fileName := "conf.yml"
+	if env != "" {
+		fileName = fmt.Sprintf("conf.%s.yml", env)
+	}
 
-	env := getEnv("GIN_MODE", "dev")
-	filePath := fmt.Sprintf("./config/conf.%s.yml", env)
+	// load config
+	file := fmt.Sprintf("./config/%s", fileName)
 
-	filebytes, err := ioutil.ReadFile(filePath)
+	filebytes, err := ioutil.ReadFile(file)
 	if err != nil {
 		panic(err)
 	}
@@ -38,12 +44,6 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
-	log.Printf("Loaded configs from %s in %s mode .", filePath, env)
-}
 
-func getEnv(key, fallback string) string {
-	if value, ok := os.LookupEnv(key); ok {
-		return value
-	}
-	return fallback
+	log.Printf("Loaded configs from %s in %s mode .", file, env)
 }

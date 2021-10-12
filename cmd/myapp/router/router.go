@@ -8,21 +8,20 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Register(engine *gin.Engine) {
-	// engine.Use(gin.BasicAuth(gin.Accounts{
-	// 	"admin": "admin",
-	// }))
-	engine.GET("/", func(c *gin.Context) {
+func Register() *gin.Engine {
+	r := gin.Default()
+
+	r.GET("/", func(c *gin.Context) {
 		c.String(http.StatusOK, "ok")
 	})
 
-	engine.POST("/regist", handler.Register)
-	engine.POST("/login", handler.Login)
+	r.POST("/regist", handler.Register)
+	r.POST("/login", handler.Login)
 
-	authorized := engine.Group("")
+	authorized := r.Group("")
 	authorized.Use(middleware.JwtAuthMiddleware())
 	{
 		authorized.GET("/info/:id", handler.Info)
 	}
-
+	return r
 }
