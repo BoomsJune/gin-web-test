@@ -11,7 +11,8 @@ import (
 
 type cfg struct {
 	App struct {
-		Listen string `yaml:"listen"`
+		Listen  string `yaml:"listen"`
+		SignKey string `yaml:"signkey"`
 	}
 
 	DB struct {

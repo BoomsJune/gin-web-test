@@ -27,7 +27,7 @@ func init() {
 		NamingStrategy: schema.NamingStrategy{
 			SingularTable: true, // 表名去掉s
 		},
-		Logger: logger.Default.LogMode(logger.Silent),
+		Logger: logger.Default.LogMode(logger.Info),
 	})
 	if err != nil {
 		panic(err)
