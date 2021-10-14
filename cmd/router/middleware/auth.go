@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"example.com/web-test/internal/myapp/auth"
-	"example.com/web-test/internal/pkg/util"
+	"example.com/web-test/internal/auth"
+	"example.com/web-test/util"
 	"github.com/gin-gonic/gin"
 )
 

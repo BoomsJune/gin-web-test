@@ -4,14 +4,17 @@ import (
 	"net/http"
 	"strconv"
 
-	"example.com/web-test/internal/myapp/auth"
-	"example.com/web-test/internal/pkg/util"
+	"example.com/web-test/internal/auth"
+	"example.com/web-test/util"
 	"github.com/gin-gonic/gin"
 )
 
 func Register(c *gin.Context) {
 	var user auth.User
-	c.BindJSON(&user)
+	if err := c.ShouldBindJSON(&user); err != nil {
+		util.ResponseError(c, err.Error(), http.StatusBadRequest)
+		return
+	}
 
 	token, err := user.Register()
 	if err != nil {
@@ -23,7 +26,10 @@ func Register(c *gin.Context) {
 
 func Login(c *gin.Context) {
 	var user auth.User
-	c.BindJSON(&user)
+	if err := c.ShouldBindJSON(&user); err != nil {
+		util.ResponseError(c, err.Error(), http.StatusBadRequest)
+		return
+	}
 
 	token, err := user.Login()
 	if err != nil {

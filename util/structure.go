@@ -1,8 +1,10 @@
 package util
 
-import "time"
+import (
+	"time"
+)
 
-type Model struct {
+type BaseModel struct {
 	ID        uint      `gorm:"primarykey"`
 	CreatedAt time.Time `gorm:"not null"`
 	UpdatedAt time.Time `gorm:"not null"`

@@ -4,7 +4,7 @@ import (
 	"log"
 	"time"
 
-	"example.com/web-test/internal/pkg/config"
+	"example.com/web-test/config"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -27,7 +27,7 @@ func init() {
 		NamingStrategy: schema.NamingStrategy{
 			SingularTable: true, // 表名去掉s
 		},
-		Logger: logger.Default.LogMode(logger.Info),
+		Logger: logger.Default.LogMode(logger.Silent),
 	})
 	if err != nil {
 		panic(err)

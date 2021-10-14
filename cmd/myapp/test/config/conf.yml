@@ -1,8 +1,0 @@
-app:
-  listen: "localhost:8080"
-
-db:
-  url: "postgresql://zk2021@localhost:5432/go_web_test?sslmode=disable"
-
-jwt:
-  secret: "test-jwt-secret"

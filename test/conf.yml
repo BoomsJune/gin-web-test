@@ -1,0 +1,9 @@
+app:
+  listen: "localhost:8080"
+  signkey: "test-sign-key"
+
+db:
+  url: "postgresql://zk2021@localhost:5432/test_go_web_test?sslmode=disable"
+
+jwt:
+  secret: "test-jwt-secret"

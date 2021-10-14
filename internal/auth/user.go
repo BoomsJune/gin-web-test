@@ -7,13 +7,13 @@ import (
 	"fmt"
 	"time"
 
-	"example.com/web-test/internal/pkg/config"
+	"example.com/web-test/config"
 	"example.com/web-test/internal/pkg/db"
-	"example.com/web-test/internal/pkg/util"
+	"example.com/web-test/util"
 )
 
 type User struct {
-	util.Model
+	util.BaseModel
 	Phone    string `json:"phone" binding:"required" gorm:"unique;not null;size:20"`
 	Password string `json:"password" binding:"required" gorm:"not null;size:32"`
 	NickName string `json:"nick_name,omitempty" gorm:"size:20"`
@@ -51,7 +51,7 @@ func encrypt(p *encryptParam) string {
 }
 
 func (u *User) Register() (string, error) {
-	encrypt(&encryptParam{password: u.Password})
+	u.Password = encrypt(&encryptParam{password: u.Password})
 
 	if err := db.DB.Create(&u).Error; err != nil {
 		return "", err
@@ -72,7 +72,7 @@ func (u *User) Login() (string, error) {
 		return "", err
 	}
 
-	encrypt(&encryptParam{password: u.Password, createdTs: returnUser.CreatedAt.Unix()})
+	u.Password = encrypt(&encryptParam{password: u.Password, createdTs: returnUser.CreatedAt.Unix()})
 
 	if returnUser.Password != u.Password {
 		return "", errors.New("password error")

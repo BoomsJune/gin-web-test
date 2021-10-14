@@ -35,11 +35,12 @@ func init() {
 	}
 
 	// load config
-	file := fmt.Sprintf("./config/%s", fileName)
+	file := fmt.Sprintf("./%s", fileName)
 
 	filebytes, err := ioutil.ReadFile(file)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
+		return
 	}
 	err = yaml.Unmarshal(filebytes, &Cfg)
 	if err != nil {

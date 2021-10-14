@@ -3,8 +3,8 @@ package router
 import (
 	"net/http"
 
-	"example.com/web-test/cmd/myapp/router/handler"
-	"example.com/web-test/internal/pkg/middleware"
+	"example.com/web-test/cmd/router/handler"
+	"example.com/web-test/cmd/router/middleware"
 	"github.com/gin-gonic/gin"
 )
 

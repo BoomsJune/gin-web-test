@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"example.com/web-test/internal/pkg/config"
+	"example.com/web-test/config"
 	"github.com/golang-jwt/jwt"
 )
 
