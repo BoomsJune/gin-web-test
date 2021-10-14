@@ -16,8 +16,6 @@ import (
 var r *gin.Engine
 
 func init() {
-	migrate.MigrateAll()
-
 	r = router.Register()
 }
 
